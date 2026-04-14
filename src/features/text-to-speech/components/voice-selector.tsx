@@ -63,7 +63,7 @@ export function VoiceSelector() {
           </SelectValue>
         </SelectTrigger>
         <SelectContent>
-          {hasMissingSelectedVoice && currentVoice && (
+          {hasMissingSelectedVoice && currentVoice && currentVoice.id && (
             <>
               <SelectGroup>
                 <SelectLabel>Selected Voice</SelectLabel>
@@ -87,8 +87,10 @@ export function VoiceSelector() {
           {customVoices.length > 0 && (
             <SelectGroup>
               <SelectLabel>Team Voices</SelectLabel>
-              {customVoices.map((v) => (
-                <SelectItem key={v.id} value={v.id}>
+              {customVoices
+                .filter((v) => v.id)
+                .map((v) => (
+                  <SelectItem key={v.id} value={v.id}>
                   <VoiceAvatar seed={v.id} name={v.name} />
                   <span className="truncate text-sm font-medium">
                     {v.name} - {VOICE_CATEGORY_LABELS[v.category]}
@@ -103,8 +105,10 @@ export function VoiceSelector() {
           {systemVoices.length > 0 && (
             <SelectGroup>
               <SelectLabel>Built-in Voices</SelectLabel>
-              {systemVoices.map((v) => (
-                <SelectItem key={v.id} value={v.id}>
+              {systemVoices
+                .filter((v) => v.id)
+                .map((v) => (
+                  <SelectItem key={v.id} value={v.id}>
                   <VoiceAvatar seed={v.id} name={v.name} />
                   <span className="truncate text-sm font-medium">
                     {v.name} - {VOICE_CATEGORY_LABELS[v.category]}

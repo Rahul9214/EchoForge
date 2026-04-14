@@ -23,10 +23,10 @@ export function TextToSpeechView({
 
   const { custom: customVoices, system: systemVoices } = voices;
 
-  const allVoices = [...customVoices, ...systemVoices];
+  const allVoices = [...customVoices, ...systemVoices].filter((v) => v.id);
   const fallbackVoiceId = allVoices[0]?.id ?? "";
 
-  // Requested voice may no longer exist (deleted); fall back to first available
+  // Requested voice may no longer exist (deleted); fall back to first available or empty if none
   const resolvedVoiceId =
     initialValues?.voiceId &&
     allVoices.some((v) => v.id === initialValues.voiceId)
