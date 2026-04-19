@@ -139,18 +139,34 @@ export function DashboardSidebar() {
         onOpenChange={setVoiceDialogOpen}
       />
       <Sidebar collapsible="icon">
-        <SidebarHeader className="flex flex-col gap-4 pt-4">
-          <div className="flex items-center gap-2 pl-1 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:pl-0">
-            <Image
-              src="/img_logo.png"
-              alt="EchoForge"
-              width={24}
-              height={24}
-              className="rounded-sm"
+        <SidebarHeader className="flex flex-col gap-3 px-2 pt-2 pb-1">
+          <div className="flex items-center pl-1 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:pl-0">
+            {/* Expanded logo: We use a fixed height and object-cover so the extra white space
+            around the PNG is hidden, and only the main logo area is visible. */}
+            <div className="relative h-8 w-[150px] overflow-hidden flex-shrink-0 group-data-[collapsible=icon]:hidden">
+              <Image
+                src="/img_logo.png"
+                alt="EchoForge"
+                fill
+                sizes="150px"
+                className="object-cover object-[left_center]"
+                priority
+              />
+            </div>
+
+            {/* Collapsed icon: We zoom the background image to focus only on the mic and bars.
+            The size and position values ensure just the important part of the logo is shown when the sidebar is collapsed. */}
+            <div
+              className="hidden group-data-[collapsible=icon]:block size-8 rounded-md flex-shrink-0"
+              style={{
+                backgroundImage: 'url(/img_logo.png)',
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: '520% auto',
+                backgroundPosition: '-20px 40%',
+              }}
+              role="img"
+              aria-label="EchoForge"
             />
-            <span className="group-data-[collapsible=icon]:hidden font-semibold text-lg tracking-tighter text-foreground">
-              EchoForge
-            </span>
             <SidebarTrigger className="ml-auto lg:hidden" />
           </div>
           <SidebarMenu>
