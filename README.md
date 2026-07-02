@@ -59,11 +59,11 @@ Deployed on **Railway** — the live production app is running now.
 
 EchoForge solves a real problem: turning text into expressive, natural-sounding speech at scale — using an organization's own cloned voices. The platform is built around three pillars:
 
-| Pillar | Description |
-|---|---|
-| **Voice Cloning** | Upload or record a voice sample; the AI learns it and uses it for generation |
-| **Text-to-Speech** | Generate WAV audio files from arbitrary text with fine-grained model controls |
-| **Billing & Metering** | Pay-as-you-go at **$0.30 per 1,000 characters** via Polar.sh usage events |
+| Pillar                 | Description                                                                   |
+| ---------------------- | ----------------------------------------------------------------------------- |
+| **Voice Cloning**      | Upload or record a voice sample; the AI learns it and uses it for generation  |
+| **Text-to-Speech**     | Generate WAV audio files from arbitrary text with fine-grained model controls |
+| **Billing & Metering** | Pay-as-you-go at **$0.30 per 1,000 characters** via Polar.sh usage events     |
 
 Every component is designed with **production readiness** in mind: typed end-to-end with TypeScript, multi-tenant by default, error-tracked by Sentry, and backed by presigned short-lived audio URLs that protect generated content.
 
@@ -72,12 +72,14 @@ Every component is designed with **production readiness** in mind: typed end-to-
 ## Key Features
 
 ### 🎤 Voice Cloning
+
 - **Upload audio files** (any format, up to 20 MB) or **record directly in the browser** using the microphone
 - Rich voice metadata: name, description, 12 voice categories, multi-locale language support (sourced from the `locale-codes` library)
 - Custom voices are scoped to the **organization** — fully isolated from other tenants
 - Voice samples are stored in **Cloudflare R2** and referenced by the AI model via a pre-keyed path
 
 ### 🗣️ Text-to-Speech
+
 - Generate high-quality WAV audio from up to **5,000 characters** of text
 - **20 pre-built system voices** covering categories from Audiobook to Advertising to Meditation
 - Fine-tune generation with **4 AI parameter sliders**:
@@ -89,12 +91,14 @@ Every component is designed with **production readiness** in mind: typed end-to-
 - **Generation History** — every generation is persisted per organization, browsable from the Settings panel
 
 ### 🖥️ Dashboard
+
 - **Hero text input panel** with a beautiful gradient-bordered textarea
 - Real-time **cost estimator** that previews the charge as you type
 - **6 Quick-Action cards** pre-loaded with creative prompts (narration, ads, movie scenes, game characters, podcasts, meditation guides)
 - Responsive collapsible sidebar with active route detection
 
 ### 🧩 Voice Explorer
+
 - Browse all voices (system + custom) in a paginated card layout
 - **Live audio preview** — click play on any voice card to hear a sample
 - Country flag emoji derived from locale tags using Unicode regional indicator characters
@@ -102,12 +106,14 @@ Every component is designed with **production readiness** in mind: typed end-to-
 - Safe delete with confirmation dialog (custom voices only)
 
 ### 💳 Billing
+
 - **Pay-as-you-go** via [Polar.sh](https://polar.sh) — subscription required to generate audio
 - Estimated cost shown in the sidebar, updated each period
 - One-click checkout redirect and customer portal session via tRPC mutations
 - Polar usage events fired asynchronously (fire-and-forget) so they never block the response
 
 ### 🔐 Authentication
+
 - Powered by **Clerk** — enterprise-grade auth with SSO, magic links, and social logins
 - **Organization-first** design: users must belong to an org before accessing the dashboard
 - Middleware enforces `/org-selection` redirect for authenticated-but-unorganized users
@@ -155,6 +161,7 @@ Every component is designed with **production readiness** in mind: typed end-to-
 ```
 
 **Key design principles:**
+
 - **End-to-end type safety** — types flow from Prisma schema → tRPC router output types → React component props via `inferRouterOutputs`
 - **Tenant isolation** — every database query is filtered by `orgId` extracted from Clerk's auth token in `orgProcedure`
 - **Serverless-first** — Next.js API routes + Modal for GPU — no always-on servers to manage
@@ -165,49 +172,52 @@ Every component is designed with **production readiness** in mind: typed end-to-
 ## Tech Stack
 
 ### Frontend
-| Technology | Version | Purpose |
-|---|---|---|
-| Next.js | 16.1.6 | React framework, App Router |
-| React | 19.2.3 | UI rendering |
-| TypeScript | 5.x | Type safety |
-| Tailwind CSS | 4.x | Utility-first styling |
-| shadcn/ui + Radix UI | Latest | Accessible component library |
-| TanStack Query | 5.x | Server state & caching |
-| TanStack Form | 1.x | Form state management |
-| tRPC client | 11.x | Type-safe API calls |
-| WaveSurfer.js | 7.x | Waveform audio player |
-| RecordRTC | 5.x | In-browser audio recording |
-| nuqs | 2.x | URL query state management |
-| Sonner | 2.x | Toast notifications |
-| Recharts | 3.x | Data visualization |
-| date-fns | 4.x | Date formatting |
-| clsx + tailwind-merge | Latest | Conditional class utilities |
-| Lucide React | 1.x | Icon library |
+
+| Technology            | Version | Purpose                      |
+| --------------------- | ------- | ---------------------------- |
+| Next.js               | 16.1.6  | React framework, App Router  |
+| React                 | 19.2.3  | UI rendering                 |
+| TypeScript            | 5.x     | Type safety                  |
+| Tailwind CSS          | 4.x     | Utility-first styling        |
+| shadcn/ui + Radix UI  | Latest  | Accessible component library |
+| TanStack Query        | 5.x     | Server state & caching       |
+| TanStack Form         | 1.x     | Form state management        |
+| tRPC client           | 11.x    | Type-safe API calls          |
+| WaveSurfer.js         | 7.x     | Waveform audio player        |
+| RecordRTC             | 5.x     | In-browser audio recording   |
+| nuqs                  | 2.x     | URL query state management   |
+| Sonner                | 2.x     | Toast notifications          |
+| Recharts              | 3.x     | Data visualization           |
+| date-fns              | 4.x     | Date formatting              |
+| clsx + tailwind-merge | Latest  | Conditional class utilities  |
+| Lucide React          | 1.x     | Icon library                 |
 
 ### Backend
-| Technology | Version | Purpose |
-|---|---|---|
-| tRPC server | 11.x | Typesafe API router |
-| Prisma | 7.x | ORM & query builder |
-| Prisma Client (pg adapter) | 7.x | PostgreSQL driver (Edge-compatible) |
-| AWS SDK v3 (S3-compatible) | 3.x | Cloudflare R2 file storage |
-| Clerk Next.js | 7.x | Authentication & session |
-| Polar SDK | 0.47 | Billing, subscriptions, usage metering |
-| openapi-fetch | 0.17 | Typed HTTP client for Chatterbox API |
-| superjson | 2.x | Serialization for Date/Map/Set in tRPC |
-| Sentry Next.js | 10.x | Error tracking & monitoring |
-| Zod | 4.x | Runtime schema validation |
-| t3-oss/env-nextjs | 0.13 | Type-safe environment variables |
+
+| Technology                 | Version | Purpose                                |
+| -------------------------- | ------- | -------------------------------------- |
+| tRPC server                | 11.x    | Typesafe API router                    |
+| Prisma                     | 7.x     | ORM & query builder                    |
+| Prisma Client (pg adapter) | 7.x     | PostgreSQL driver (Edge-compatible)    |
+| AWS SDK v3 (S3-compatible) | 3.x     | Cloudflare R2 file storage             |
+| Clerk Next.js              | 7.x     | Authentication & session               |
+| Polar SDK                  | 0.47    | Billing, subscriptions, usage metering |
+| openapi-fetch              | 0.17    | Typed HTTP client for Chatterbox API   |
+| superjson                  | 2.x     | Serialization for Date/Map/Set in tRPC |
+| Sentry Next.js             | 10.x    | Error tracking & monitoring            |
+| Zod                        | 4.x     | Runtime schema validation              |
+| t3-oss/env-nextjs          | 0.13    | Type-safe environment variables        |
 
 ### AI Infrastructure
-| Technology | Purpose |
-|---|---|
-| Modal | Serverless GPU deployment platform |
-| ChatterboxTurboTTS | AI TTS model (voice cloning capability) |
-| FastAPI | Python HTTP server wrapping the model |
-| NVIDIA A10G GPU | Inference hardware |
-| PEFT | Parameter-efficient fine-tuning adapters |
-| torchaudio | Audio I/O in Python |
+
+| Technology         | Purpose                                  |
+| ------------------ | ---------------------------------------- |
+| Modal              | Serverless GPU deployment platform       |
+| ChatterboxTurboTTS | AI TTS model (voice cloning capability)  |
+| FastAPI            | Python HTTP server wrapping the model    |
+| NVIDIA A10G GPU    | Inference hardware                       |
+| PEFT               | Parameter-efficient fine-tuning adapters |
+| torchaudio         | Audio I/O in Python                      |
 
 ---
 
@@ -307,16 +317,18 @@ echoforge/
 EchoForge uses **Clerk** for authentication with an **organization-first** model. Every user must belong to an organization before accessing the dashboard.
 
 **Middleware (`src/proxy.ts`)**:
+
 ```typescript
 export default clerkMiddleware(async (auth, req) => {
   const { userId, orgId } = await auth();
 
-  if (!userId) await auth.protect();          // redirect to sign-in
-  if (!orgId) redirect("/org-selection");     // force org selection
+  if (!userId) await auth.protect(); // redirect to sign-in
+  if (!orgId) redirect("/org-selection"); // force org selection
 });
 ```
 
 **tRPC Procedures** (`src/trpc/init.ts`):
+
 - `baseProcedure` — any unauthenticated call; augmented with Sentry tracing middleware
 - `authProcedure` — requires `userId`; throws `UNAUTHORIZED` otherwise
 - `orgProcedure` — requires both `userId` **and** `orgId`; throws `FORBIDDEN` if no org; the `orgId` is forwarded to all router handlers, ensuring complete data isolation
@@ -331,15 +343,15 @@ The AI inference layer lives in `chatterbox_tts.py` — a Python file that deplo
 
 **Key design decisions:**
 
-| Decision | Detail |
-|---|---|
-| **GPU** | NVIDIA A10G — specified via `gpu="a10g"` in `chatterbox_tts.py` (line 84); Modal provisions this hardware automatically for each container |
-| **Concurrency** | `@modal.concurrent(max_inputs=10)` — up to 10 simultaneous requests per container |
-| **Cold start mitigation** | `scaledown_window=60*5` — containers stay warm for 5 minutes after last request |
-| **Model loading** | `@modal.enter()` — model is loaded once per container lifecycle, not per request |
-| **Voice storage** | R2 bucket is **mounted read-only** inside Modal as a FUSE filesystem — no download overhead per-request |
-| **Security** | `X-Api-Key` header required; validated against `CHATTERBOX_API_KEY` env secret |
-| **Auth** | API key injected via `modal.Secret.from_name("chatterbox-api-key")` — never in source code |
+| Decision                  | Detail                                                                                                                                     |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| **GPU**                   | NVIDIA A10G — specified via `gpu="a10g"` in `chatterbox_tts.py` (line 84); Modal provisions this hardware automatically for each container |
+| **Concurrency**           | `@modal.concurrent(max_inputs=10)` — up to 10 simultaneous requests per container                                                          |
+| **Cold start mitigation** | `scaledown_window=60*5` — containers stay warm for 5 minutes after last request                                                            |
+| **Model loading**         | `@modal.enter()` — model is loaded once per container lifecycle, not per request                                                           |
+| **Voice storage**         | R2 bucket is **mounted read-only** inside Modal as a FUSE filesystem — no download overhead per-request                                    |
+| **Security**              | `X-Api-Key` header required; validated against `CHATTERBOX_API_KEY` env secret                                                             |
+| **Auth**                  | API key injected via `modal.Secret.from_name("chatterbox-api-key")` — never in source code                                                 |
 
 **Generation parameters the model accepts:**
 | Parameter | Range | Default | UX Label |
@@ -351,6 +363,7 @@ The AI inference layer lives in `chatterbox_tts.py` — a Python file that deplo
 | `norm_loudness` | bool | true | Loudness normalization |
 
 **Testing the Modal deployment locally:**
+
 ```bash
 # CLI test
 modal run chatterbox_tts.py \
@@ -372,19 +385,22 @@ curl -X POST "https://<your-modal-endpoint>/generate" \
 All client–server communication goes through tRPC v11 with SuperJSON serialization (supports `Date`, `Map`, `Set` natively across the wire).
 
 #### `voices` router
-| Procedure | Type | Input | Description |
-|---|---|---|---|
-| `getAll` | Query | `{ query?: string }` | Returns `{ custom, system }` voice arrays. Custom voices are filtered by `orgId`; system voices are global. Supports case-insensitive full-text search on name + description. |
-| `delete` | Mutation | `{ id: string }` | Deletes a custom voice owned by the org. Also deletes the R2 object (best-effort, ignores failure). |
+
+| Procedure | Type     | Input                | Description                                                                                                                                                                   |
+| --------- | -------- | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `getAll`  | Query    | `{ query?: string }` | Returns `{ custom, system }` voice arrays. Custom voices are filtered by `orgId`; system voices are global. Supports case-insensitive full-text search on name + description. |
+| `delete`  | Mutation | `{ id: string }`     | Deletes a custom voice owned by the org. Also deletes the R2 object (best-effort, ignores failure).                                                                           |
 
 #### `generations` router
-| Procedure | Type | Input | Description |
-|---|---|---|---|
-| `getAll` | Query | — | All generations for the org, ordered by `createdAt DESC` |
-| `getById` | Query | `{ id: string }` | Single generation with `audioUrl` pointing to `/api/audio/:id` |
-| `create` | Mutation | `{ text, voiceId, temperature, topP, topK, repetitionPenalty }` | Full generation pipeline (see below) |
+
+| Procedure | Type     | Input                                                           | Description                                                    |
+| --------- | -------- | --------------------------------------------------------------- | -------------------------------------------------------------- |
+| `getAll`  | Query    | —                                                               | All generations for the org, ordered by `createdAt DESC`       |
+| `getById` | Query    | `{ id: string }`                                                | Single generation with `audioUrl` pointing to `/api/audio/:id` |
+| `create`  | Mutation | `{ text, voiceId, temperature, topP, topK, repetitionPenalty }` | Full generation pipeline (see below)                           |
 
 **`generations.create` pipeline:**
+
 1. Check for active Polar subscription — throw `FORBIDDEN: SUBSCRIPTION_REQUIRED` if none
 2. Resolve voice from DB (validates ownership for custom voices)
 3. Verify `r2ObjectKey` exists — voice must have an uploaded sample
@@ -392,16 +408,17 @@ All client–server communication goes through tRPC v11 with SuperJSON serializa
 5. Create `Generation` record in DB (without `r2ObjectKey`)
 6. Upload WAV to R2 at key `generations/orgs/{orgId}/{generationId}`
 7. Update `Generation` record with `r2ObjectKey`
-8. Fire Polar usage event `tts_generation` with `{ characters: text.length }` *(fire-and-forget)*
+8. Fire Polar usage event `tts_generation` with `{ characters: text.length }` _(fire-and-forget)_
 9. Return `{ id: generationId }`
 
 If step 6 or 7 fails, the orphaned DB record is cleaned up. Sentry logs every significant event in this pipeline.
 
 #### `billing` router
-| Procedure | Type | Description |
-|---|---|---|
-| `getStatus` | Query | Returns subscription status + estimated cost in cents from Polar |
-| `createCheckout` | Mutation | Creates Polar checkout session and returns redirect URL |
+
+| Procedure             | Type     | Description                                                       |
+| --------------------- | -------- | ----------------------------------------------------------------- |
+| `getStatus`           | Query    | Returns subscription status + estimated cost in cents from Polar  |
+| `createCheckout`      | Mutation | Creates Polar checkout session and returns redirect URL           |
 | `createPortalSession` | Mutation | Creates Polar customer portal session for subscription management |
 
 ---
@@ -411,6 +428,7 @@ If step 6 or 7 fails, the orphaned DB record is cleaned up. Sentry logs every si
 All audio assets (voices + generated speech) are stored in **Cloudflare R2** using an S3-compatible API (`@aws-sdk/client-s3`).
 
 **Object key schema:**
+
 ```
 voices/system/{voiceId}           # Pre-seeded system voice WAV samples
 voices/custom/{orgId}/{voiceId}   # User-uploaded custom voice samples
@@ -418,11 +436,13 @@ generations/orgs/{orgId}/{generationId}  # Generated speech WAV files
 ```
 
 **Audio serving strategy:**
+
 - Audio is **never served directly from R2** (no public bucket)
 - Next.js Route Handlers (`/api/audio/[generationId]` and `/api/voices/[voiceId]`) act as authenticated proxies — they fetch a 1-hour presigned URL from R2 and redirect to it
 - This ensures only authenticated organization members can access audio files
 
 **R2 utility functions** (`src/lib/r2.ts`):
+
 ```typescript
 uploadAudio({ buffer, key, contentType? })  // PutObjectCommand
 deleteAudio(key)                             // DeleteObjectCommand
@@ -438,6 +458,7 @@ EchoForge uses **Polar.sh** as its billing infrastructure with a **pay-as-you-go
 **Pricing:** `$0.30 per 1,000 characters` (i.e., `COST_PER_UNIT = 0.0003` per character)
 
 **Billing flow:**
+
 1. User subscribes via the Polar checkout (Stripe-backed)
 2. Every successful generation fires a Polar usage event: `{ name: "tts_generation", metadata: { characters: N } }`
 3. Polar aggregates events and bills the subscription per its meter configuration
@@ -452,6 +473,7 @@ EchoForge uses **Polar.sh** as its billing infrastructure with a **pay-as-you-go
 **Schema** (`prisma/schema.prisma`):
 
 #### `Voice` model
+
 ```prisma
 model Voice {
   id          String        @id @default(cuid())
@@ -471,6 +493,7 @@ model Voice {
 ```
 
 #### `Generation` model
+
 ```prisma
 model Generation {
   id                String   @id @default(cuid())
@@ -492,6 +515,7 @@ model Generation {
 ```
 
 **Key design decisions:**
+
 - `voiceName` is **denormalized** into `Generation` — so the history always shows the correct voice name even if the voice is later renamed or deleted
 - `voiceId` is nullable with `onDelete: SetNull` — deleting a voice doesn't cascade-delete its generations
 - The Prisma client is generated into `src/generated/prisma` (not `node_modules`) for better Next.js edge compatibility using `@prisma/adapter-pg`
@@ -504,7 +528,9 @@ model Generation {
 ### Frontend Features
 
 #### Dashboard (`/`)
+
 The dashboard home serves as the product's hero entry point:
+
 - A **gradient hero input** (`text-input-panel.tsx`) — a visually striking multi-layer gradient-bordered textarea with live cost estimation
 - **6 Quick Action cards** arranged in a responsive grid, each pre-seeded with a creative scenario that deep-links into the TTS studio with a pre-filled prompt
 - A **`HeroPattern` background** with a wavy animated SVG grid using `simplex-noise`
@@ -514,6 +540,7 @@ The dashboard home serves as the product's hero entry point:
 The primary workspace with three panes:
 
 **Left pane — Text Input** (`text-input-panel.tsx`):
+
 - Textarea with up to 5,000 character limit
 - Character counter + live cost badge
 - Prompt suggestions button (opens drawer with curated writing prompt ideas)
@@ -521,10 +548,12 @@ The primary workspace with three panes:
 
 **Right pane — Settings** (`settings-panel.tsx`):
 Two tabs — **Settings** and **History**:
-- *Settings tab*: Voice selector dropdown + 4 AI parameter sliders
-- *History tab*: All past generations listed with voice avatar, name, relative timestamp; click to open the detail view
+
+- _Settings tab_: Voice selector dropdown + 4 AI parameter sliders
+- _History tab_: All past generations listed with voice avatar, name, relative timestamp; click to open the detail view
 
 **Far-right pane — Voice Preview** (`voice-preview-panel.tsx`, desktop only):
+
 - WaveSurfer.js waveform visualization
 - `mm:ss / mm:ss` time display
 - Play / Pause / Seek ±10s controls
@@ -532,27 +561,31 @@ Two tabs — **Settings** and **History**:
 - Mobile version (`voice-preview-mobile.tsx`) uses a compact bottom-mounted drawer
 
 **`TextToSpeechForm`** is built with **TanStack Form** and wraps the entire studio, providing:
+
 - A typed form context accessible from any nested component via `useTypedAppFormContext`
 - Form submission triggers `generations.create` mutation
 - On success: navigates to `/text-to-speech/{generationId}` (the detail view)
 - Subscription gate: catches `SUBSCRIPTION_REQUIRED` error and redirects to checkout
 
 **Voice Selector** (`voice-selector.tsx`):
+
 - Groups voices into "Your voices" and "System voices" sections
 - Searchable combobox with `cmdk`
 - Animated popover built on Radix UI primitives
 - Reads from `TTSVoicesContext` to avoid prop drilling
 
 #### Voice Explorer (`/voices`)
+
 - Search bar (debounced, URL-synced via `nuqs`)
 - `VoicesToolbar` with a "Clone a new voice" button that opens `VoiceCreateDialog`
 - Separate sections for custom and system voices
 - `VoicesView` uses `useSuspenseQuery` for data fetching with a Suspense/ErrorBoundary wrapper in the layout
 
 #### Voice Creation Flow
+
 `VoiceCreateDialog` → `VoiceCreateForm`:
 
-1. **Audio tab selection**: *Upload* (drag-and-drop dropzone, any audio format, 20 MB max) or *Record* (browser microphone via RecordRTC)
+1. **Audio tab selection**: _Upload_ (drag-and-drop dropzone, any audio format, 20 MB max) or _Record_ (browser microphone via RecordRTC)
 2. **Voice name** input with `Tag` icon prefix
 3. **Category** select from 12 options
 4. **Language** searchable combobox built with `locale-codes` library (hundreds of locales with region display names)
@@ -567,52 +600,53 @@ The `VoiceCreateForm` uses a `footer` render prop pattern, allowing the `VoiceCr
 ## Data Models
 
 ### VoiceVariant Enum
-| Value | Description |
-|---|---|
+
+| Value    | Description                                          |
+| -------- | ---------------------------------------------------- |
 | `SYSTEM` | Curated by EchoForge; available to all organizations |
-| `CUSTOM` | Created by an organization; scoped to that org only |
+| `CUSTOM` | Created by an organization; scoped to that org only  |
 
 ### Voice Categories
 
-| Key | Label | Example Use |
-|---|---|---|
-| `AUDIOBOOK` | Audiobook | Long-form narration, chapter reading |
-| `CONVERSATIONAL` | Conversational | Chat agents, casual dialogue |
-| `CUSTOMER_SERVICE` | Customer Service | IVR, support bots |
-| `GENERAL` | General | All-purpose narration |
-| `NARRATIVE` | Narrative | Storytelling, documentary |
-| `CHARACTERS` | Characters | Game NPCs, animation |
-| `MEDITATION` | Meditation | Guided relaxation, mindfulness |
-| `MOTIVATIONAL` | Motivational | Coaching, fitness content |
-| `PODCAST` | Podcast | Episode intros, hosting |
-| `ADVERTISING` | Advertising | Commercials, promos |
-| `VOICEOVER` | Voiceover | Corporate videos, explainers |
-| `CORPORATE` | Corporate | Training, presentations |
+| Key                | Label            | Example Use                          |
+| ------------------ | ---------------- | ------------------------------------ |
+| `AUDIOBOOK`        | Audiobook        | Long-form narration, chapter reading |
+| `CONVERSATIONAL`   | Conversational   | Chat agents, casual dialogue         |
+| `CUSTOMER_SERVICE` | Customer Service | IVR, support bots                    |
+| `GENERAL`          | General          | All-purpose narration                |
+| `NARRATIVE`        | Narrative        | Storytelling, documentary            |
+| `CHARACTERS`       | Characters       | Game NPCs, animation                 |
+| `MEDITATION`       | Meditation       | Guided relaxation, mindfulness       |
+| `MOTIVATIONAL`     | Motivational     | Coaching, fitness content            |
+| `PODCAST`          | Podcast          | Episode intros, hosting              |
+| `ADVERTISING`      | Advertising      | Commercials, promos                  |
+| `VOICEOVER`        | Voiceover        | Corporate videos, explainers         |
+| `CORPORATE`        | Corporate        | Training, presentations              |
 
 ### System Voices (20 pre-built)
 
-| Name | Category | Locale | Description |
-|---|---|---|---|
-| Aaron | Audiobook | en-US | Soothing and calm, like a self-help audiobook narrator |
-| Abigail | Conversational | en-GB | Friendly and warm, approachable tone |
-| Anaya | Customer Service | en-IN | Polite and professional |
-| Andy | General | en-US | Versatile and clear, reliable all-purpose narrator |
-| Archer | Narrative | en-US | Laid-back and reflective, storytelling pace |
-| Brian | Customer Service | en-US | Professional and helpful |
-| Chloe | Corporate | en-AU | Bright and bubbly, cheerful personality |
-| Dylan | General | en-US | Thoughtful and intimate |
-| Emmanuel | Characters | en-US | Nasally and distinctive, cartoon-like quality |
-| Ethan | Voiceover | en-US | Polished and warm, studio-quality delivery |
-| Evelyn | Conversational | en-US | Warm Southern charm |
-| Gavin | Meditation | en-US | Calm and reassuring, smooth natural flow |
-| Gordon | Motivational | en-US | Warm and encouraging, uplifting tone |
-| Ivan | Characters | ru-RU | Deep and cinematic, dramatic movie-character presence |
-| Laura | Conversational | en-US | Authentic and warm, conversational Midwestern tone |
-| Lucy | Customer Service | en-US | Direct and composed, professional phone manner |
-| Madison | Podcast | en-US | Energetic and unfiltered, casual chatty vibe |
-| Marisol | Advertising | en-US | Confident and polished, persuasive ad-ready delivery |
-| Meera | Customer Service | en-IN | Friendly and helpful, service-oriented tone |
-| Walter | Narrative | en-US | Old and raspy with deep gravitas |
+| Name     | Category         | Locale | Description                                            |
+| -------- | ---------------- | ------ | ------------------------------------------------------ |
+| Aaron    | Audiobook        | en-US  | Soothing and calm, like a self-help audiobook narrator |
+| Abigail  | Conversational   | en-GB  | Friendly and warm, approachable tone                   |
+| Anaya    | Customer Service | en-IN  | Polite and professional                                |
+| Andy     | General          | en-US  | Versatile and clear, reliable all-purpose narrator     |
+| Archer   | Narrative        | en-US  | Laid-back and reflective, storytelling pace            |
+| Brian    | Customer Service | en-US  | Professional and helpful                               |
+| Chloe    | Corporate        | en-AU  | Bright and bubbly, cheerful personality                |
+| Dylan    | General          | en-US  | Thoughtful and intimate                                |
+| Emmanuel | Characters       | en-US  | Nasally and distinctive, cartoon-like quality          |
+| Ethan    | Voiceover        | en-US  | Polished and warm, studio-quality delivery             |
+| Evelyn   | Conversational   | en-US  | Warm Southern charm                                    |
+| Gavin    | Meditation       | en-US  | Calm and reassuring, smooth natural flow               |
+| Gordon   | Motivational     | en-US  | Warm and encouraging, uplifting tone                   |
+| Ivan     | Characters       | ru-RU  | Deep and cinematic, dramatic movie-character presence  |
+| Laura    | Conversational   | en-US  | Authentic and warm, conversational Midwestern tone     |
+| Lucy     | Customer Service | en-US  | Direct and composed, professional phone manner         |
+| Madison  | Podcast          | en-US  | Energetic and unfiltered, casual chatty vibe           |
+| Marisol  | Advertising      | en-US  | Confident and polished, persuasive ad-ready delivery   |
+| Meera    | Customer Service | en-IN  | Friendly and helpful, service-oriented tone            |
+| Walter   | Narrative        | en-US  | Old and raspy with deep gravitas                       |
 
 ---
 
@@ -667,6 +701,7 @@ SKIP_ENV_VALIDATION=true      # Skip env validation (CI/testing only)
 ## Getting Started
 
 ### Prerequisites
+
 - Node.js 20+
 - pnpm / npm / yarn
 - PostgreSQL database (local or hosted)
@@ -727,17 +762,17 @@ modal deploy chatterbox_tts.py
 
 ## Scripts & Tooling
 
-| Script | Command | Description |
-|---|---|---|
-| Dev server | `npm run dev` | Start Next.js in development mode with HMR |
-| Build | `npm run build` | Production build with Sentry source map upload |
-| Start | `npm run start` | Start production server |
-| Lint | `npm run lint` | ESLint with Next.js config |
-| Seed voices | `npx tsx scripts/seed-system-voices.ts` | Uploads 20 system voice WAVs to R2 and seeds DB |
-| Sync API types | `npm run sync-api` | Fetches OpenAPI spec from Chatterbox and regenerates `types/chatterbox-api.d.ts` |
-| Prisma generate | `npx prisma generate` | Regenerates Prisma client (also runs automatically `postinstall`) |
-| Prisma migrate | `npx prisma migrate dev` | Create and apply new migrations in development |
-| Prisma studio | `npx prisma studio` | Visual database browser at `localhost:5555` |
+| Script          | Command                                 | Description                                                                      |
+| --------------- | --------------------------------------- | -------------------------------------------------------------------------------- |
+| Dev server      | `npm run dev`                           | Start Next.js in development mode with HMR                                       |
+| Build           | `npm run build`                         | Production build with Sentry source map upload                                   |
+| Start           | `npm run start`                         | Start production server                                                          |
+| Lint            | `npm run lint`                          | ESLint with Next.js config                                                       |
+| Seed voices     | `npx tsx scripts/seed-system-voices.ts` | Uploads 20 system voice WAVs to R2 and seeds DB                                  |
+| Sync API types  | `npm run sync-api`                      | Fetches OpenAPI spec from Chatterbox and regenerates `types/chatterbox-api.d.ts` |
+| Prisma generate | `npx prisma generate`                   | Regenerates Prisma client (also runs automatically `postinstall`)                |
+| Prisma migrate  | `npx prisma migrate dev`                | Create and apply new migrations in development                                   |
+| Prisma studio   | `npx prisma studio`                     | Visual database browser at `localhost:5555`                                      |
 
 ---
 
@@ -746,30 +781,39 @@ modal deploy chatterbox_tts.py
 EchoForge is built on top of **shadcn/ui** with extensive customization. The `src/components/ui/` directory contains **57 components**:
 
 ### Core UI Primitives
+
 `Button` · `Input` · `Textarea` · `Select` (native + Radix) · `Checkbox` · `Switch` · `Radio Group` · `Slider` · `Label` · `Badge` · `Skeleton` · `Spinner` · `Progress` · `Separator`
 
 ### Layout & Navigation
+
 `Sidebar` (21 KB — the full collapsible sidebar system) · `Navigation Menu` · `Tabs` · `Resizable` (panels) · `Scroll Area` · `Pagination` · `Breadcrumb`
 
 ### Overlay Components
+
 `Dialog` · `Alert Dialog` · `Sheet` · `Drawer` (Vaul) · `Popover` · `Tooltip` · `Hover Card` · `Dropdown Menu` · `Context Menu` · `Menubar`
 
 ### Data Display
+
 `Table` · `Chart` (Recharts wrapper) · `Accordion` · `Carousel` (Embla) · `Calendar` · `Avatar` · `Card`
 
 ### Form Components
+
 `Form` (react-hook-form wrapper) · `Field` (TanStack Form wrapper) · `Combobox` · `Command` · `Input OTP` · `Input Group` · `Button Group` · `Toggle` · `Toggle Group`
 
 ### Feedback
+
 `Alert` · `Sonner` (toast) · `Empty` (empty states)
 
 ### Custom Components
+
 `WavyBackground` — animated SVG background using simplex noise for the dashboard hero  
 `VoiceAvatar` — DiceBear deterministic avatar generated from a seed (voice ID or name)  
 `PageHeader` — mobile-only header with sidebar trigger
 
 ### Design System Tokens
+
 Defined in `globals.css` with CSS custom properties following the shadcn/ui convention:
+
 - `--background`, `--foreground`, `--muted`, `--muted-foreground`
 - `--primary`, `--secondary`, `--destructive`, `--border`, `--ring`
 - `--chart-1` through `--chart-5` for data visualization
@@ -873,15 +917,18 @@ Browser                          Next.js Server              Modal (Python)
 EchoForge uses **Sentry** for full-stack error tracking and performance monitoring:
 
 **Server-side** (`sentry.server.config.ts`):
+
 - Sentry Node SDK initialized in `src/trpc/init.ts`
 - `sentryMiddleware` wraps all tRPC procedures — automatically captures RPC input in error reports
 - Structured logging with `Sentry.logger.info / .error` at key generation pipeline steps
 
 **Client-side** (`src/instrumentation-client.ts`):
+
 - Browser Sentry SDK captures unhandled errors and React error boundaries
 - `global-error.tsx` — Next.js root error boundary reports to Sentry
 
 **Next.js integration** (`next.config.ts`):
+
 - `withSentryConfig` wraps the entire Next.js config — integrates source map uploads at build time for human-readable production stack traces
 - `tunnelRoute: "/monitoring"` routes Sentry requests through the Next.js app, bypassing ad-blockers that block `sentry.io` directly
 - `removeDebugLogging: true` tree-shakes Sentry debug statements from the production bundle for smaller output
@@ -890,17 +937,17 @@ EchoForge uses **Sentry** for full-stack error tracking and performance monitori
 
 ## Security Model
 
-| Concern | Mitigation |
-|---|---|
-| **Authentication** | Clerk JWT verified on every request; server-only SDK never trusts client-supplied user IDs |
-| **Authorization** | `orgProcedure` middleware extracts `orgId` from verified JWT — not from request body |
-| **Tenant isolation** | All DB queries filtered by `ctx.orgId`; `orgId` is never accepted as user input |
-| **Audio access control** | R2 bucket is private; audio served via short-lived (1-hour) presigned URLs through authenticated Route Handlers |
-| **API key** | Chatterbox API key stored in Modal secrets, injected via env — never in source code or browser |
-| **Environment validation** | All secrets validated at startup by Zod; app refuses to start if any are missing |
-| **Input validation** | All tRPC inputs validated by Zod schemas; text max 5,000 characters enforced at both UI and server |
-| **File upload** | Voice uploads streamed directly to R2 via Route Handler; 20 MB limit enforced by Next.js proxy config |
-| **CSRF** | Not applicable — tRPC uses per-request Clerk auth cookies; no traditional form submissions |
+| Concern                    | Mitigation                                                                                                      |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| **Authentication**         | Clerk JWT verified on every request; server-only SDK never trusts client-supplied user IDs                      |
+| **Authorization**          | `orgProcedure` middleware extracts `orgId` from verified JWT — not from request body                            |
+| **Tenant isolation**       | All DB queries filtered by `ctx.orgId`; `orgId` is never accepted as user input                                 |
+| **Audio access control**   | R2 bucket is private; audio served via short-lived (1-hour) presigned URLs through authenticated Route Handlers |
+| **API key**                | Chatterbox API key stored in Modal secrets, injected via env — never in source code or browser                  |
+| **Environment validation** | All secrets validated at startup by Zod; app refuses to start if any are missing                                |
+| **Input validation**       | All tRPC inputs validated by Zod schemas; text max 5,000 characters enforced at both UI and server              |
+| **File upload**            | Voice uploads streamed directly to R2 via Route Handler; 20 MB limit enforced by Next.js proxy config           |
+| **CSRF**                   | Not applicable — tRPC uses per-request Clerk auth cookies; no traditional form submissions                      |
 
 ---
 
@@ -944,6 +991,7 @@ railway up
 **Environment variables** are set directly in the Railway dashboard under your service → Variables. The Sentry auth token for source map uploads goes in `.env.sentry-build-plugin` locally or as a build-time env var in Railway.
 
 **Infrastructure checklist (what is deployed and running):**
+
 - [x] **PostgreSQL** — hosted on Railway (same project, private network)
 - [x] **Cloudflare R2** — private bucket storing all voice samples and generated audio
 - [x] **Clerk** — production authentication instance
@@ -964,6 +1012,7 @@ railway up
 5. Open a Pull Request
 
 **Coding standards:**
+
 - TypeScript strict mode — no `any` unless absolutely necessary
 - All tRPC procedures must use at minimum `authProcedure`; org-scoped data must use `orgProcedure`
 - New features should follow the feature-sliced directory structure: `components/`, `views/`, `hooks/`, `data/`
